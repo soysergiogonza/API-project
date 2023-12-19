@@ -1,21 +1,22 @@
-// See https://github.com/typicode/json-server#module
+const path = require('path')
 const jsonServer = require('json-server')
 const server = jsonServer.create()
-const router = jsonServer.router('db.json')
-const middlewares = jsonServer.defaults()
+const router = jsonServer.router(path.join(__dirname, 'db.json'));
+const middlewares = jsonServer.defaults();
+const cors = require('cors');
 
+
+server.use(cors());
 server.use(middlewares)
-// Add this before server.use(router)
-// server.use(jsonServer.rewriter({
-//     '/api/*': '/$1',
-//     '/product/:resource/:id/show': '/:resource/:id'
-// }))
 
-const PORT = process.env.PORT || 3000
+server.use(jsonServer.rewriter({
+    '/api/*': '/$1',
+}));
+
+const PORT = process.env.PORT || 3001
 server.use(router)
 server.listen(PORT, () => {
     console.log(`JSON Server is running on port ${PORT}`)
 })
 
-// Export the Server API
 module.exports = server
